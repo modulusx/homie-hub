@@ -1,17 +1,23 @@
 FROM	ubuntu:14.04
 
-MAINTAINER	matt@mrkunkel.com
+MAINTAINER	Matt Kunkel matt@mrkunkel.com
+
+RUN	groupadd -r homiehub && useradd -r -g homiehub homiehub
 
 RUN	apt-get update && \
-	apt-get -y upgrade && \
-	apt-get install -y python-setuptools python-dev && \
-	easy_install pip && \
-	pip install pubnub && \
-	pip install influxdb && \
-	apt-get clean && \
+	apt-get -y upgrade
+
+RUN	apt-get install -y python-setuptools python-dev && \
+	easy_install pip
+
+RUN	pip install pubnub influxdb
+
+RUN	apt-get clean && \
 	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-ADD	src/	/src
 WORKDIR	/src
+ADD	src/	/src
+
+USER	homiehub
 
 CMD python homiehub.py
